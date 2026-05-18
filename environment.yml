@@ -1,0 +1,13 @@
+name: oil-game
+channels:
+  - defaults
+  - dlr-sc
+  - pythonocc
+  - oce
+  - anaconda
+  - conda-forge
+dependencies:
+  - matplotlib
+  - jupyterlab
+  - numpy
+prefix: C:\Users\RickyTan\miniconda3\envs\oil-game
