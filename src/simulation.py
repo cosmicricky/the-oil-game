@@ -1,5 +1,3 @@
-import matplotlib.pyplot as plt
-
 from facility import Facility
 from policies import naive_policy
 
@@ -84,60 +82,3 @@ class Simulation:
             self.beta * inventory_shortfall
         )
         return crude + distribution
-
-
-    def plot(self):
-        """
-        Plot results and visualization.
-        """
-        # extract history
-        t = [h["timestep"] for h in self.history]
-        demand = [h["demand"] for h in self.history]
-        inventory = [h["inventory"] for h in self.history]
-        backlog = [h["backlog"] for h in self.history]
-        order = [h["order"] for h in self.history]
-        price = [h["price"] for h in self.history]
-
-        fig, ax1 = plt.subplots(figsize=(10, 5))
-        
-        # inventory
-        ax1.fill_between(t, inventory, label="Inventory", alpha=0.25)
-        ax1.plot(t, inventory)
-
-        # demand
-        ax1.plot(t, demand, label="Demand", color="orange", linestyle="--")
-
-        # backlog
-        # ax1.plot(t, backlog, label="Backlog", color="purple")
-
-        # orders
-        ax1.plot(t, order, label="Orders")
-
-        # primary axis
-        ax1.set_xlabel("Week")
-        ax1.set_ylabel("Units")
-        ax1.grid(True, alpha=0.3)
-
-        # price (secondary axis)
-        ax2 = ax1.twinx()
-        ax2.plot(t, price, label="Fuel Price", color="red")
-        ax2.set_ylabel("Price ($/gal)")
-        
-        # Get legend entries from both axes
-        lines1, labels1 = ax1.get_legend_handles_labels()
-        lines2, labels2 = ax2.get_legend_handles_labels()
-
-        # combine legends
-        legend = ax1.legend(
-            lines1 + lines2, 
-            labels1 + labels2, 
-            loc="upper left",
-            frameon=True, 
-            facecolor="white", 
-            framealpha=1.0
-        )
-        legend.set_zorder(2)
-
-        plt.title("Oil Game: Simulation Results")
-        fig.tight_layout()
-        plt.show()
