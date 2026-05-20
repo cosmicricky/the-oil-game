@@ -7,18 +7,19 @@ class Facility:
     - backlog: unmet demand
     - pipeline: orders placed but still in transit
     """
-    def __init__(self, name: str, initial_inventory: int, delay: int):
+    def __init__(self, name: str, initial: float, delay: int):
         """
         Create a new facility.
 
         Args:
             name (str): The name of the facility.
-            initial_inventory (int): Product available at start of simulation.
+            initial (float): Initial inventory level.
+            target (float): Target inventory level.
             delay (int): Number of time steps between placing an order
                 and receiving it.
         """
         self.name = name
-        self.inventory = float(initial_inventory)
+        self.inventory = initial
         self.backlog = 0.0
 
         # Store delay so step() can check whether orders arrive immediately.

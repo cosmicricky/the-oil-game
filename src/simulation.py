@@ -19,12 +19,7 @@ class Simulation:
             exponentially to scarcity, while crude oil is added separately
             as a direct input cost.
     """
-    def __init__(self, delay: int = 1, pricing: str = "hybrid"):
-        self.depot = Facility(
-            name="Fuel Depot",
-            initial_inventory=20.0,
-            delay=delay
-        )
+    def __init__(self, pricing: str = "hybrid", target_inventory: float = 20.0):
 
         # Selected pricing model
         self.pricing = pricing
@@ -34,17 +29,32 @@ class Simulation:
         #   - $3.00 refining + distribution + retail
         #   - $2.00 crude oil input cost
         self.base_price = 3.00          # scarcity-sensitive component ($/gal)
-        self.target_inventory = 20.0    # desired inventory level
+        self.target_inventory = target_inventory    # target inventory level (units)
         self.k = 0.05                   # exponential scarcity sensitivity
         self.beta = 0.05                # linear price slope ($/unit shortfall)
 
         self.history = []
 
 
+    def initialize_depot(self, initial: float, delay: int) -> Facility:
+        """
+        Create a fuel depot with the given initial inventory.
+        """
+        self.depot = Facility(
+            name="Depot",
+            initial=initial,
+            delay=delay
+        )
+        return self.depot
+
+
     def run(self, duration: int = 52) -> None:
         """
         Run the simulation for a given number of time steps.
         """
+        if self.depot is None:
+            ValueError("Must initialize depot before running simulation.")
+
         self.history = []  # reset history
 
         # Constant customer demand (you can later introduce shocks)
