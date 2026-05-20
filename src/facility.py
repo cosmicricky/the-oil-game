@@ -10,23 +10,39 @@ class Facility:
     def __init__(self, name: str, initial_inventory: int, delay: int):
         """
         Create a new facility.
+
         Args:
             name (str): The name of the facility.
             initial_inventory (int): Product available at start of simulation.
-            delay (int): Number of time steps between placing an order and receiving it.
+            delay (int): Number of time steps between placing an order
+                and receiving it.
         """
         self.name = name
         self.inventory = float(initial_inventory)
-        self.backlog = 0.0 # if customers request more than inventory, excess demand is stored here
-        self.pipeline = [0.0] * delay # queue of orders in transit
+        self.backlog = 0.0
+
+        # Store delay so step() can check whether orders arrive immediately.
+        self.delay = delay
+
+        # Pipeline of shipments in transit.
+        # If delay = 0, this becomes an empty list, which is fine because
+        # step() handles that case separately.
+        self.pipeline = [0.0] * delay
 
 
     def step(self, demand: float, order: float) -> dict:
         """
         Advance the simulation by one time step.
         """
-        # 1. Receive shipments from pipeline (FIFO)
-        incoming = float(self.pipeline.pop(0)) # NOTE: fixed transport delay (like conveyor belt)
+        # 1. Receive shipments from pipeline
+        if self.delay == 0:
+            # NOTE: orders arrive immediately (no transport delay)
+            incoming = order
+        else:
+            # NOTE: FIFO fixed transport delay
+            incoming = float(self.pipeline.pop(0))
+        
+        # update inventory
         self.inventory += incoming
 
         # 2. Add new demand to backlog
